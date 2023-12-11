@@ -9,7 +9,7 @@ public class MiddlewareStep : IPipelineStep
     {
         var step = new PipelineDelegate(inner.ProcessAsync);
 
-        foreach (var pipeline in pipelineMiddlewares)
+        foreach (var pipeline in pipelineMiddlewares.Reverse())
         {
             var currentStep = step;
 

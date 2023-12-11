@@ -33,7 +33,7 @@ public sealed class ArchiveStep : IPipelineStep
             {
                 using (var archive = new ZipArchive(fs, ZipArchiveMode.Read))
                 {
-                    archive.ExtractToDirectory(archiveFolder);
+                    archive.ExtractToDirectory(archiveFolder, true);
                 }
             }
 
