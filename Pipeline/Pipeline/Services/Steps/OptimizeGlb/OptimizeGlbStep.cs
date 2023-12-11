@@ -13,40 +13,23 @@ public sealed class OptimizeGlbStep : IPipelineStep
             return;
         }
 
-        var workingFolder = Path.Combine(Path.GetTempPath(), "glb");
+        var workingFolder = context.WorkingFile.DirectoryName!;
 
-        Directory.CreateDirectory(workingFolder);
-
-        var sourceName = $"{Guid.NewGuid()}.glb";
-        var sourcePath = Path.Combine(workingFolder, sourceName);
         var targetName = $"{Guid.NewGuid()}.glb";
         var targetPath = Path.Combine(workingFolder, targetName);
 
-        try
+        var result = await Cli.Wrap("gltf-transform")
+            .WithValidation(CommandResultValidation.None)
+            .WithWorkingDirectory(workingFolder)
+            .WithArguments($"optimize {context.WorkingFile.Name} {targetName} --compress draco --texture-compress webp")
+            .ExecuteBufferedAsync();
+
+        if (result.ExitCode != 0)
         {
-            using (var fs = new FileStream(sourcePath, FileMode.Create))
-            {
-                await context.Stream.CopyToAsync(fs);
-            }
-
-            var result = await Cli.Wrap("gltf-transform")
-                .WithWorkingDirectory(workingFolder)
-                .WithArguments($"optimize {sourceName} {targetName} --compress draco --texture-compress webp")
-                .ExecuteBufferedAsync();
-
-            if (result.ExitCode != 0)
-            {
-                throw new InvalidOperationException($"Failed to invoke compressor. Got status code {result.ExitCode}. Output: {result.StandardOutput}. Error: {result.StandardError}");
-            }
-
-            context.Stream.Dispose();
-            context.Stream = new FileStream(targetPath, FileMode.Open);
-
-            context.ProcessData["CompressOutput"] = result.StandardOutput;
+            throw new InvalidOperationException($"Failed to invoke compressor. Got status code {result.ExitCode}. Output: {result.StandardOutput}. Error: {result.StandardError}");
         }
-        finally
-        {
-            File.Delete(sourcePath);
-        }
+
+        context.WorkingFile = new FileInfo(targetPath);
+        context.ProcessData["CompressOutput"] = result.StandardOutput;
     }
 }

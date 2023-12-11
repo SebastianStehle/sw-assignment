@@ -5,6 +5,9 @@ public record struct FileProcessResult(FileProcessStatus Status, string? Details
     public static readonly FileProcessResult Pending =
         new(FileProcessStatus.Pending);
 
+    public static readonly FileProcessResult Skipped =
+        new(FileProcessStatus.Skipped);
+
     public static readonly FileProcessResult Success =
         new(FileProcessStatus.Success);
 
@@ -16,5 +19,6 @@ public enum FileProcessStatus
 {
     Pending,
     Failed,
+    Skipped,
     Success
 }

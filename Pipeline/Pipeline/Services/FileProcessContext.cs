@@ -1,8 +1,12 @@
 ﻿namespace Pipeline.Services;
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
 public sealed class FileProcessContext
 {
     required public Stream Stream { get; set; }
+
+    public FileInfo WorkingFile { get; set; }
 
     public Guid ProcessId { get; set; } = Guid.NewGuid();
 

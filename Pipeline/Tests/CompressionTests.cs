@@ -19,29 +19,24 @@ public class CompressionTests : IClassFixture<PlaywrightFixture>
     [Fact]
     public async void Should_compress_file()
     {
-        var originalStream = new FileStream("Files/hay_chair.glb", FileMode.Open);
-        var originalSize = originalStream.Length;
+        var originalFile = new FileInfo("Files/hay_chair.glb");
+        var originalSize = originalFile.Length;
 
         var context = new FileProcessContext
         {
-            Stream = originalStream
+            Stream = null!,
+            // We are working on the file directly.
+            WorkingFile = originalFile,
         };
 
         context.Metadata[MetadataKeys.Extension] = "glb";
 
         await sut.ProcessAsync(context);
 
-        var tempFile = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.glb");
-
-        using (var fs = new FileStream(tempFile, FileMode.Create))
-        {
-            await context.Stream.CopyToAsync(fs);
-        }
-
-        var compressionRate = (double)context.Stream.Length / originalSize;
+        var compressionRate = (double)context.WorkingFile.Length / originalSize;
 
         Assert.InRange(compressionRate, 0, 0.2);
-        await AssertVisualAsync(tempFile, "Files/hay_chair.png");
+        await AssertVisualAsync(context.WorkingFile.FullName, "Files/hay_chair.png");
     }
 
     private async Task AssertVisualAsync(string tempFile, string expectedFile)

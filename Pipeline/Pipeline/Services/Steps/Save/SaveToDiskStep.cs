@@ -14,7 +14,7 @@ public class SaveToDiskStep : IPipelineStep
 
     public async Task ProcessAsync(FileProcessContext context)
     {
-        if (context.ProcessResult.Status == FileProcessStatus.Failed)
+        if (context.ProcessResult.Status is FileProcessStatus.Failed or FileProcessStatus.Skipped)
         {
             return;
         }
@@ -29,7 +29,10 @@ public class SaveToDiskStep : IPipelineStep
 
         using (var fs = new FileStream(fullPath, FileMode.Create))
         {
-            await context.Stream.CopyToAsync(fs);
+            using (var source = context.WorkingFile.OpenRead())
+            {
+                await source.CopyToAsync(fs);
+            }
         }
 
         context.ProcessData["StorageName"] = fullName;

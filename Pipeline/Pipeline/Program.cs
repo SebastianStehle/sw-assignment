@@ -7,6 +7,7 @@ using Pipeline.Services.Middlewares.Store;
 using Pipeline.Services.Sources.FileSystem;
 using Pipeline.Services.Steps.ArchiveStep;
 using Pipeline.Services.Steps.Cleanup;
+using Pipeline.Services.Steps.CopyFile;
 using Pipeline.Services.Steps.Deletion;
 using Pipeline.Services.Steps.ExtractMetadata;
 using Pipeline.Services.Steps.OptimizeGlb;
@@ -61,6 +62,7 @@ namespace Pipeline
             services.AddSingleton<IPipelineMiddleware, ErrorHandlingMiddleware>();
             services.AddSingleton<IPipelineMiddleware, MetricsMiddleware>();
 
+            services.AddSingleton<IPipelineStep, CopyFileStep>();
             services.AddSingleton<IPipelineStep, ExtractMetadataStep>();
             services.AddSingleton<IPipelineStep, ArchiveStep>();
             services.AddSingleton<IPipelineStep, OptimizeGlbStep>();

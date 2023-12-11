@@ -9,7 +9,7 @@ public class CalculateCompressionRateStep : IPipelineStep
             return Task.CompletedTask;
         }
 
-        var currentFileSize = context.Stream.Length;
+        var currentFileSize = context.WorkingFile.Length;
 
         if (currentFileSize >= originalFileSize)
         {

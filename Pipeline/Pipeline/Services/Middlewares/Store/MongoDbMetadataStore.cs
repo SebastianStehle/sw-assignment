@@ -14,7 +14,7 @@ public sealed class MongoDbMetadataStore : IMetadataStore, IPipelineMiddleware
 
     public async Task HandleAsync(FileProcessContext context, IPipelineStep step, PipelineDelegate inner)
     {
-         await inner(context);
+        await inner(context);
 
         var entity = new FileMetadata
         {
