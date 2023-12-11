@@ -4,11 +4,11 @@ using CliWrap.Buffered;
 
 namespace Pipeline.Services.Steps.OptimizeGlb;
 
-public sealed class OptimizeStep : IPipelineStep
+public sealed class OptimizeGlbStep : IPipelineStep
 {
     public async Task ProcessAsync(FileProcessContext context)
     {
-        if (!context.TryGetMetadata<string>(MetadataKeys.Extension, out var extension) || extension != "glb")
+        if (!context.TryGetMetadata<string>(MetadataKeys.Extension, out var extension) || !(extension is "glb" or "gltf"))
         {
             return;
         }
@@ -24,11 +24,10 @@ public sealed class OptimizeStep : IPipelineStep
 
         try
         {
-            var originalLength = context.Stream.Length;
-
             using (var fs = new FileStream(sourcePath, FileMode.Create))
             {
-                await context.Stream.CopyToAsync(fs);            }
+                await context.Stream.CopyToAsync(fs);
+            }
 
             var result = await Cli.Wrap("gltf-transform")
                 .WithWorkingDirectory(workingFolder)
@@ -44,7 +43,6 @@ public sealed class OptimizeStep : IPipelineStep
             context.Stream = new FileStream(targetPath, FileMode.Open);
 
             context.ProcessData["CompressOutput"] = result.StandardOutput;
-            context.ProcessData["CompressionRate"] = string.Format("Value: {0:P2}.", (double)context.Stream.Length / originalLength);
         }
         finally
         {

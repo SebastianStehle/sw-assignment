@@ -4,8 +4,9 @@
 
 namespace Pipeline.Services;
 
-public sealed class PipelineRunner : IHostedService
+public sealed class PipelineRunner : IHostedService, IPipelineRunner
 {
+    private readonly MiddlewareStep[] steps;
     private readonly ActionBlock<FileProcessContext> pipeline;
     private readonly IDataSource source;
 
@@ -14,15 +15,9 @@ public sealed class PipelineRunner : IHostedService
         IEnumerable<IPipelineStep> pipelineSteps,
         IEnumerable<IPipelineMiddleware> pipelineMiddlewares)
     {
-        var steps = pipelineSteps.Select(x => new MiddlewareStep(x, pipelineMiddlewares)).ToArray();
+        steps = pipelineSteps.Select(x => new MiddlewareStep(x, pipelineMiddlewares)).ToArray();
 
-        pipeline = new ActionBlock<FileProcessContext>(async context =>
-        {
-            foreach (var step in steps)
-            {
-                await step.ProcessAsync(context);
-            }
-        },
+        pipeline = new ActionBlock<FileProcessContext>(ProcessInlineAsync,
         new ExecutionDataflowBlockOptions
         {
             MaxDegreeOfParallelism = 10,
@@ -31,6 +26,14 @@ public sealed class PipelineRunner : IHostedService
         });
 
         this.source = source;
+    }
+
+    public async Task ProcessInlineAsync(FileProcessContext context)
+    {
+        foreach (var step in steps)
+        {
+            await step.ProcessAsync(context);
+        }
     }
 
     public Task StartAsync(CancellationToken cancellationToken)

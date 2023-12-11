@@ -84,7 +84,7 @@ public class FileSystemDataSource : IDataSource
 
         context.Metadata[MetadataKeys.RelativePath] = GetRelativePath(fullPath);
         context.Metadata[MetadataKeys.FileName] = fileInfo.Name;
-        context.Metadata[MetadataKeys.OriginalFileSize] = fileInfo.Length;
+        context.Metadata[MetadataKeys.FileSize] = fileInfo.Length;
         context.Metadata[MetadataKeys.CreationTimeUtc] = fileInfo.CreationTimeUtc;
 
         context.TemporaryData["fullPath"] = fullPath;
@@ -92,8 +92,8 @@ public class FileSystemDataSource : IDataSource
         return context;
     }
 
-    private string GetRelativePath(string fullePath)
+    private string GetRelativePath(string fullPath)
     {
-        return fullePath[options.SourceFolder.Length..];
+        return fullPath[(options.SourceFolder.Length + 1)..];
     }
 }

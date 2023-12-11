@@ -8,7 +8,7 @@ namespace Tests;
 
 public class CompressionTests : IClassFixture<PlaywrightFixture>
 {
-    private readonly OptimizeStep sut = new OptimizeStep();
+    private readonly OptimizeGlbStep sut = new OptimizeGlbStep();
     private readonly PlaywrightFixture _;
 
     public CompressionTests(PlaywrightFixture playwrightFixture)

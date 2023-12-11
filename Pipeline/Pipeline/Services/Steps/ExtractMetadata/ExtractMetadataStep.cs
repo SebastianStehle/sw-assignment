@@ -7,6 +7,7 @@ public sealed class ExtractMetadataStep : IPipelineStep
     {
         ["glb"] = "model/gltf-binary",
         ["gltf"] = "model/gltf-binary",
+        ["zip"] = "application-x-zip"
     };
     private readonly ILogger<ExtractMetadataStep> logger;
 
