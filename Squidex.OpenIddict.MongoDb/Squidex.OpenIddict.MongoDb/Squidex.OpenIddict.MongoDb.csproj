@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	<NoWarn>8618</NoWarn>
+  </PropertyGroup>
+	
+  <PropertyGroup>
+    <Authors>sebastianstehle</Authors>
+    <Company>Squidex UG (haftungsbeschränkt)</Company>
+    <Copyright>MIT</Copyright>
+    <Description>OpenIdDict fork for Squidex</Description>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <PackageIcon>logo-squared.png</PackageIcon>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/squidex/squidex</PackageProjectUrl>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <Version>5.1.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="logo-squared.png" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MongoDB.Driver" Version="2.23.1" />
+    <PackageReference Include="OpenIddict.Core" Version="5.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="MongoDB.Bson" />
+    <Using Include="MongoDB.Bson.Serialization.Attributes" />
+    <Using Include="MongoDB.Driver" />
+    <Using Include="MongoDB.Driver.Linq" />
+    <Using Include="OpenIddict.Abstractions" />
+    <Using Include="OpenIddict.Abstractions.OpenIddictConstants" Static="true" />
+    <Using Include="OpenIddict.Abstractions.OpenIddictResources" Alias="SR" />
+  </ItemGroup>
+
+</Project>
